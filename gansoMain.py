@@ -32,7 +32,8 @@ class GansoApp(tk.Tk):
         # Load program GUI frame
         tk.Tk.__init__(self, *args, **kwargs)
         
-        tk.Tk.iconbitmap(self, default="Resources\\Images\\gansoIcon.ico")
+        # FIXME: the *.ico needs to be converted to *xbm
+        #tk.Tk.iconbitmap(self, default="Resources/Images/gansoIcon.ico")
         tk.Tk.wm_title(self, "GANSO - GST And Network Slice Operator")
         tk.Tk.resizable(self,width=False, height=False)
 
@@ -77,7 +78,7 @@ class PageStart(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         # Main picture
-        self.photo = tk.PhotoImage(file=".\\Resources\\Images\\gansoLogo.png")
+        self.photo = tk.PhotoImage(file="Resources/Images/gansoLogo.png")
         pagePic = tk.Label(self, image=self.photo)
         pagePic.grid(row=0,column=0,columnspan = 2)
         
@@ -99,8 +100,8 @@ class PageLogin(tk.Frame):
         # Page description
         pageTitle = tk.Label(self, text = "Login page", font = LARGE_FONT)
         pageTitle.grid(row=0, column=3, columnspan=9, sticky="w")
-        loginIcon = tk.PhotoImage(file="Resources\\Images\\loginIcon.png")
-        self.newUserIcon = tk.PhotoImage(file="Resources\\Images\\newUserIcon.png")
+        loginIcon = tk.PhotoImage(file="Resources/Images/loginIcon.png")
+        self.newUserIcon = tk.PhotoImage(file="Resources/Images/newUserIcon.png")
 
         # Login - User and password
         tk.Label(self, text="Username: ", width = 8).grid(row=2, column=1,sticky="w")
@@ -156,7 +157,7 @@ class PageLogin(tk.Frame):
 
                         for x in range(len(ethType)):
 
-                            with open('Resources\\flowNewTable.json') as json_file:
+                            with open('Resources/flowNewTable.json') as json_file:
                                 jsonFile = json.load(json_file)
                                 jsonFile["deviceId"] = SWITCHES[i]
                                 jsonFile["selector"]["criteria"][0]["ethType"] = ethType[x]
@@ -281,9 +282,9 @@ class PageMainMenu(tk.Frame):
         # Page description
         pageTitle = tk.Label(self, text = "Main Menu", font = LARGE_FONT)
         pageTitle.grid(row=0, column=0,columnspan=7)
-        netInfoIcon = tk.PhotoImage(file="Resources\\Images\\netInfoIcon.png")
-        contInfoIcon = tk.PhotoImage(file="Resources\\Images\\contInfoIcon.png")
-        netSliceIcon = tk.PhotoImage(file="Resources\\Images\\netSliceIcon.png")
+        netInfoIcon = tk.PhotoImage(file="Resources/Images/netInfoIcon.png")
+        contInfoIcon = tk.PhotoImage(file="Resources/Images/contInfoIcon.png")
+        netSliceIcon = tk.PhotoImage(file="Resources/Images/netSliceIcon.png")
 
         # Button: Network information
         buttonNetInfo = ttk.Button(self, image=netInfoIcon, command=lambda: controller.show_frame(PageNetInfo))
@@ -329,12 +330,12 @@ class PageNetInfo(tk.Frame):
         # Page description
         pageTitle = tk.Label(self, text = "    Network information", font = LARGE_FONT)
         pageTitle.grid(row=0, column=0,columnspan=7)
-        switchInfoIcon = tk.PhotoImage(file="Resources\\Images\\switchInfoIcon.png")
-        hostInfoIcon = tk.PhotoImage(file="Resources\\Images\\hostInfoIcon.png")
-        linkInfoIcon = tk.PhotoImage(file="Resources\\Images\\linkInfoIcon.png")
-        topoInfoIcon = tk.PhotoImage(file="Resources\\Images\\topoInfoIcon.png")
-        clusterInfoIcon = tk.PhotoImage(file="Resources\\Images\\clusterInfoIcon.png")
-        configInfoIcon = tk.PhotoImage(file="Resources\\Images\\configInfoIcon.png")
+        switchInfoIcon = tk.PhotoImage(file="Resources/Images/switchInfoIcon.png")
+        hostInfoIcon = tk.PhotoImage(file="Resources/Images/hostInfoIcon.png")
+        linkInfoIcon = tk.PhotoImage(file="Resources/Images/linkInfoIcon.png")
+        topoInfoIcon = tk.PhotoImage(file="Resources/Images/topoInfoIcon.png")
+        clusterInfoIcon = tk.PhotoImage(file="Resources/Images/clusterInfoIcon.png")
+        configInfoIcon = tk.PhotoImage(file="Resources/Images/configInfoIcon.png")
 
         # Show device information
         buttonSwitches = ttk.Button(self, image=switchInfoIcon, width=5, command=lambda: gansoNetworkFunctions.showNetInfo("devices", SWITCHES, ONOS_URL, ONOS_USR, ONOS_PWD))
@@ -445,9 +446,9 @@ class PageNetSlice(tk.Frame):
         # Page description
         pageTitle = tk.Label(self, text = "Network slice", font = LARGE_FONT)
         pageTitle.grid(row=0, column=0,columnspan=7)
-        newGstIcon = tk.PhotoImage(file="Resources\\Images\\newGstIcon.png")
-        uploadGstIcon = tk.PhotoImage(file="Resources\\Images\\uploadGstIcon.png")
-        viewSlicesIcon = tk.PhotoImage(file="Resources\\Images\\viewSlicesIcon.png")
+        newGstIcon = tk.PhotoImage(file="Resources/Images/newGstIcon.png")
+        uploadGstIcon = tk.PhotoImage(file="Resources/Images/uploadGstIcon.png")
+        viewSlicesIcon = tk.PhotoImage(file="Resources/Images/viewSlicesIcon.png")
 
         # Create GST
         buttonNewGst = ttk.Button(self, image=newGstIcon, width=10, command=lambda: gansoNetworkFunctions.newGst(GANSO_USR, SWITCHES, ONOS_URL, ONOS_USR, ONOS_PWD))

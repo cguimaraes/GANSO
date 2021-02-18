@@ -219,7 +219,7 @@ def newGst(username, switches, onosUrl, onosUsr, onosPwd):
 
 def createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userDataAccess, userDataHosts, exportGST, createNetSlice, switches, onosUrl, onosUsr, onosPwd):
     
-    outputPath = "NetSlices\\" + sliceName + ".xml"  
+    outputPath = "NetSlices/" + sliceName + ".xml"  
     rateLimitHosts = rateLimitHosts.replace(" ", "").split(',')
     userDataHosts = userDataHosts.replace(" ", "").split(',')
 
@@ -280,7 +280,7 @@ def createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userData
         outputPath = gansoMiscFunctions.outputFolder()
 
         if outputPath != '':
-            outputPath = outputPath + "\\GANSO_slice_"+sliceName + ".xml"
+            outputPath = outputPath + "/GANSO_slice_"+sliceName + ".xml"
             with open(outputPath, 'wb') as f:
                 f.write(b'<?xml version="1.0" encoding="UTF-8"?>')
                 tree.write(f, xml_declaration=False, encoding='utf-8')
@@ -290,7 +290,7 @@ def createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userData
         createNetworkSlice(sliceName, switches, onosUrl, onosUsr, onosPwd, False)
 
     # If switches does not exist, include network slice in netSlices file
-    netSlicesFile = open("NetSlices\\netSlices.txt", "a+")
+    netSlicesFile = open("NetSlices/netSlices.txt", "a+")
     netSlicesFile.write(sliceName+"\n")
     netSlicesFile.close()
 
@@ -316,7 +316,7 @@ def showSlices():
     scrollbarHor.config(command=info.xview)
 
     # Open file containing users
-    netSlicesFile = open('NetSlices\\netSlices.txt', 'r') 
+    netSlicesFile = open('NetSlices/netSlices.txt', 'r') 
     count = 0
 
     # Read users
@@ -332,7 +332,7 @@ def showSlices():
             netSlicesFile.close()
             return False
         
-        file = open('NetSlices\\'+ netSliceName + '.xml', 'r')
+        file = open('NetSlices/'+ netSliceName + '.xml', 'r')
 
         dom = xml.dom.minidom.parse(file)
 
@@ -351,12 +351,12 @@ def createNetworkSlice(sliceName, switches, onosUrl, onosUsr, onosPwd, uploaded)
         gstPath = sliceName
         sliceName = sliceName.split("/")
         sliceName = sliceName[len(sliceName)-1]
-        netSlicesFile = open("NetSlices\\netSlices.txt", "a+")
+        netSlicesFile = open("NetSlices/netSlices.txt", "a+")
         netSlicesFile.write(sliceName.replace('.xml',"")+"\n")
         netSlicesFile.close()
-        copyfile(gstPath, 'NetSlices\\'+sliceName)      
+        copyfile(gstPath, 'NetSlices/'+sliceName)      
     else:
-        gstPath = "NetSlices\\" + sliceName + ".xml"    
+        gstPath = "NetSlices/" + sliceName + ".xml"    
     rateLimitHosts = []
     userDataHosts = []
     root = ET.parse(gstPath).getroot()
@@ -391,7 +391,7 @@ def rateLimitRule(rateLimit, priority, switchId, hosts, onosUrl, onosUsr, onosPw
         meterId = 0
         
         urlMeter = onosUrl+"meters/" + switchId
-        with open('Resources\\FlowRules\\rateLimitMeters.json') as json_file:
+        with open('Resources/FlowRules/rateLimitMeters.json') as json_file:
             meterJson = json.load(json_file)
 
         meterJson["deviceId"] = switchId
@@ -410,7 +410,7 @@ def rateLimitRule(rateLimit, priority, switchId, hosts, onosUrl, onosUsr, onosPw
 
         urlFlow = onosUrl+"flows/"+switchId+"?appId=*.core"
 
-        with open('Resources\\FlowRules\\rateLimitFlows.json') as json_file:
+        with open('Resources/FlowRules/rateLimitFlows.json') as json_file:
             flowJson = json.load(json_file)
 
         flowJson["priority"] = priority
@@ -433,7 +433,7 @@ def userDataAccessRule(userDataAccess, priority, switchId, hosts, onosUrl, onosU
 
     if userDataAccess == "1 - Private network":
         
-        with open('Resources\\FlowRules\\userDataFlows_PrivateNetwork.json') as json_file1:
+        with open('Resources/FlowRules/userDataFlows_PrivateNetwork.json') as json_file1:
             flowJson1 = json.load(json_file1)
 
         flowJson1["priority"] = 60000
@@ -442,7 +442,7 @@ def userDataAccessRule(userDataAccess, priority, switchId, hosts, onosUrl, onosU
 #        flowJson1["treatment"]["instructions"]= [{"type":"OUTPUT", "port": "CONTROLLER"}]
         flowJson1["selector"]["criteria"][1]["ip"] = "10.0.0.0/16"
 
-        with open('Resources\\FlowRules\\userDataFlows_PrivateNetwork.json') as json_file2:
+        with open('Resources/FlowRules/userDataFlows_PrivateNetwork.json') as json_file2:
             flowJson2 = json.load(json_file2)
 
         flowJson2["priority"] = 55000
@@ -459,7 +459,7 @@ def userDataAccessRule(userDataAccess, priority, switchId, hosts, onosUrl, onosU
 
     elif userDataAccess == "2 - No traffic":
         
-        with open('Resources\\FlowRules\\userDataFlows_NoConnection.json') as json_file:
+        with open('Resources/FlowRules/userDataFlows_NoConnection.json') as json_file:
             flowJson = json.load(json_file)
 
         flowJson["deviceId"] = switchId
@@ -476,7 +476,7 @@ def userDataAccessRule(userDataAccess, priority, switchId, hosts, onosUrl, onosU
 def netSliceExists(userName, netSliceName):
 
     # Open file containing users
-    netSlicesFile = open('NetSlices\\netSlices.txt', 'r') 
+    netSlicesFile = open('NetSlices/netSlices.txt', 'r') 
     count = 0
 
     # Read users

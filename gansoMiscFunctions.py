@@ -37,7 +37,7 @@ def help(whichHelp):
     scrollbarVer.config(command=info.yview)
     scrollbarHor.config(command=info.xview)
 
-    file = open("Resources\\Help\\help" + whichHelp + ".txt")
+    file = open("Resources/Help/help" + whichHelp + ".txt")
     info.insert(1.0, file.read())
 
 # ================================================================================================================================== #
