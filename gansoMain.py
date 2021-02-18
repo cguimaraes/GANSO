@@ -26,12 +26,12 @@ SWITCHES     = []
 
 # Loads the frame and pages of the GUI
 class GansoApp(tk.Tk):
-    
+
     def __init__(self, *args, **kwargs):
-        
+
         # Load program GUI frame
         tk.Tk.__init__(self, *args, **kwargs)
-        
+
         # FIXME: the *.ico needs to be converted to *xbm
         #tk.Tk.iconbitmap(self, default="Resources/Images/gansoIcon.ico")
         tk.Tk.wm_title(self, "GANSO - GST And Network Slice Operator")
@@ -51,20 +51,20 @@ class GansoApp(tk.Tk):
             PageMainMenu,
             PageNetInfo,
             PageNetSlice,
-            PageNewUser,            
+            PageNewUser,
             PageStart
         ]
-        
+
         for page in PAGES:
-        
+
             frame = page(container, self)
             self.frames[page] = frame
             frame.grid(row=0, column=0, sticky="snew")
-        
+
         self.show_frame(PageStart)
-        
+
     def show_frame(self, cont):
-        
+
         frame = self.frames[cont]
         frame.tkraise()
 
@@ -72,31 +72,31 @@ class GansoApp(tk.Tk):
 
 # Welcome page - Shows user that GANSO app is now running
 class PageStart(tk.Frame):
-    
+
     def __init__(self, parent, controller):
-        
+
         tk.Frame.__init__(self, parent)
 
         # Main picture
         self.photo = tk.PhotoImage(file="Resources/Images/gansoLogo.png")
         pagePic = tk.Label(self, image=self.photo)
         pagePic.grid(row=0,column=0,columnspan = 2)
-        
+
         # Action Buttons
         buttonNext = ttk.Button(self, text="Start", command=lambda: controller.show_frame(PageLogin))
         buttonNext.grid(row=2,column=0,sticky="s", columnspan=2)
-        
+
         self.grid_rowconfigure(2, minsize=25)
-        
+
 # ================================================================================================================================== #
 
 # Login page - Allows login and new user creation
 class PageLogin(tk.Frame):
-    
+
     def __init__(self, parent, controller):
-        
+
         tk.Frame.__init__(self, parent)
-        
+
         # Page description
         pageTitle = tk.Label(self, text = "Login page", font = LARGE_FONT)
         pageTitle.grid(row=0, column=3, columnspan=9, sticky="w")
@@ -113,16 +113,16 @@ class PageLogin(tk.Frame):
         buttonLogin = ttk.Button(self, image=loginIcon,command=lambda: login(entryUser.get(), entryPwd.get()))
         buttonLogin.image = loginIcon
         buttonLogin.grid(row=4,column=2, sticky="e")
-        
+
         # New user option
         tk.Label(self, image=self.newUserIcon).grid(row=2, column=6,rowspan=2)
         buttonNewUser = ttk.Button(self, text="New user", width=10, command=lambda: controller.show_frame(PageNewUser))
         buttonNewUser.grid(row=4, column=6,sticky="w")
-        
+
         # Action buttons
         buttonHelp = ttk.Button(self, text="Help", command=lambda: gansoMiscFunctions.help("Login"))
         buttonHelp.grid(row=7,column=0,sticky="s")
- 
+
         # GUI formatting
         tk.Label(self, text="or", width = 18).grid(row=3, column=4)
         tk.Label(self, text="", width=3).grid(row=2, column=0)
@@ -175,7 +175,7 @@ class PageLogin(tk.Frame):
 class PageNewUser(tk.Frame):
 
     def __init__(self, parent, controller):
-        
+
         tk.Frame.__init__(self, parent)
 
         # Page description
@@ -185,7 +185,7 @@ class PageNewUser(tk.Frame):
         pageInfo.grid(row=1, column=1, sticky="w", columnspan = 9)
         pageInfo = tk.Label(self, text="ONOS information: ")
         pageInfo.grid(row=1, column=6, sticky="w", columnspan = 20)
-        
+
         # Input new GANSO user and password
         tk.Label(self, text="User: ", width = 8).grid(row=2, column=2,sticky="w")
         entryGansoUser = ttk.Entry(self, width=10)
@@ -229,7 +229,7 @@ class PageNewUser(tk.Frame):
         buttonNext = ttk.Button(self, text="Next >>", command=lambda: nextPage(entryGansoUser.get(), entryGansoPwd.get(), entryIP1.get(), \
             entryIP2.get(), entryIP3.get(), entryIP4.get(), entryPort.get(), entryOnosUser.get(), entryOnosPwd.get()))
         buttonNext.grid(row=8,column=17,sticky="es",columnspan=5)
-        
+
         # GUI formatting
         tk.Label(self, text="", width = 5).grid(row=1, column=5)
         tk.Label(self, text="", width = 1).grid(row=2, column=0)
@@ -251,7 +251,7 @@ class PageNewUser(tk.Frame):
             textLabel.grid(row=6, column=3,columnspan=15, sticky="w")
 
             newUser = gansoUserFunctions.createUserInfo(gansoUser, gansoPwd, ip1, ip2, ip3, ip4, port, onosUser, onosPwd)
-            errorLabel = gansoUserFunctions.errorNewUser(newUser) 
+            errorLabel = gansoUserFunctions.errorNewUser(newUser)
 
             textLabel.destroy()
             textLabel = tk.Label(self, text=errorLabel)
@@ -259,7 +259,7 @@ class PageNewUser(tk.Frame):
 
             if newUser == 0:
                 userInfo = gansoUserFunctions.getUserInfo(gansoUser)
-                
+
                 global GANSO_USR, ONOS_URL, ONOS_USR, ONOS_PWD, SWITCHES
                 GANSO_USR = userInfo[0]
                 ONOS_URL  = userInfo[2]
@@ -274,11 +274,11 @@ class PageNewUser(tk.Frame):
 
 # Main menu page - Allows user to go to pages: Network information, Controller configuration & Network Slice
 class PageMainMenu(tk.Frame):
-    
+
     def __init__(self, parent, controller):
 
         tk.Frame.__init__(self, parent)
-        
+
         # Page description
         pageTitle = tk.Label(self, text = "Main Menu", font = LARGE_FONT)
         pageTitle.grid(row=0, column=0,columnspan=7)
@@ -294,7 +294,7 @@ class PageMainMenu(tk.Frame):
 
         # Button: Controller configuration
         buttonOnosConfig = ttk.Button(self, image=contInfoIcon, command=lambda: controller.show_frame(PageController))
-        buttonOnosConfig.image = contInfoIcon        
+        buttonOnosConfig.image = contInfoIcon
         buttonOnosConfig.grid(row=2, column=3)
         tk.Label(self, text="Controller", font='arial 10 bold').grid(row=3,column=3)
 
@@ -314,7 +314,7 @@ class PageMainMenu(tk.Frame):
         tk.Label(self, text=" ",width=8).grid(row=1,column=0)
         tk.Label(self, text=" ",width=7).grid(row=2,column=2)
         tk.Label(self, text=" ",width=7).grid(row=2,column=4)
-        tk.Label(self, text=" ",width=7).grid(row=2,column=6)     
+        tk.Label(self, text=" ",width=7).grid(row=2,column=6)
         self.grid_rowconfigure(0, minsize=45)
         self.grid_rowconfigure(4, minsize=30)
 
@@ -324,7 +324,7 @@ class PageMainMenu(tk.Frame):
 class PageNetInfo(tk.Frame):
 
     def __init__(self, parent, controller):
-        
+
         tk.Frame.__init__(self, parent)
 
         # Page description
@@ -339,7 +339,7 @@ class PageNetInfo(tk.Frame):
 
         # Show device information
         buttonSwitches = ttk.Button(self, image=switchInfoIcon, width=5, command=lambda: gansoNetworkFunctions.showNetInfo("devices", SWITCHES, ONOS_URL, ONOS_USR, ONOS_PWD))
-        buttonSwitches.image = switchInfoIcon        
+        buttonSwitches.image = switchInfoIcon
         buttonSwitches.grid(row=1, column=1)
         tk.Label(self, text="Switches", font='arial 10 bold').grid(row=2,column=1)
 
@@ -357,7 +357,7 @@ class PageNetInfo(tk.Frame):
 
         # Show topology information
         buttonTopo = ttk.Button(self, image=topoInfoIcon, width=5, command=lambda: gansoNetworkFunctions.showNetInfo("topology", SWITCHES, ONOS_URL, ONOS_USR, ONOS_PWD))
-        buttonTopo.image = topoInfoIcon        
+        buttonTopo.image = topoInfoIcon
         buttonTopo.grid(row=3, column=1)
         tk.Label(self, text="Topology", font='arial 10 bold').grid(row=4,column=1)
 
@@ -383,13 +383,13 @@ class PageNetInfo(tk.Frame):
         tk.Label(self, text=" ",width=12).grid(row=1,column=0)
         tk.Label(self, text=" ",width=9).grid(row=2,column=2)
         tk.Label(self, text=" ",width=7).grid(row=3,column=4)
-        tk.Label(self, text=" ",width=7).grid(row=6,column=6)     
+        tk.Label(self, text=" ",width=7).grid(row=6,column=6)
         self.grid_rowconfigure(0, minsize=50)
 
 # ================================================================================================================================== #
 #                                            Page: Controller                                             #
 class PageController(tk.Frame):
-    
+
     def __init__(self, parent, controller):
 
         tk.Frame.__init__(self, parent)
@@ -398,7 +398,7 @@ class PageController(tk.Frame):
 
         pageInfo = tk.Label(self, text="Choose information about:")
         pageInfo.grid(row=1, column=1, sticky="w", columnspan=4)
-        
+
         tk.Label(self, text="",width=5).grid(row=1,column=0)
 
         buttonHosts = ttk.Button(self, text="Flows", width=10, command=lambda: gansoNetworkFunctions.showControllerInfo("flows", entryId.get(), SWITCHES, ONOS_URL, ONOS_USR, ONOS_PWD))
@@ -406,10 +406,10 @@ class PageController(tk.Frame):
 
         buttonSwitches = ttk.Button(self, text="Intents", width=10, command=lambda: gansoNetworkFunctions.showControllerInfo("intents", entryId.get(), SWITCHES, ONOS_URL, ONOS_USR, ONOS_PWD))
         buttonSwitches.grid(row=2,column=2, sticky="w")
-   
+
         buttonLinks= ttk.Button(self, text="Apps", width=10, command=lambda: gansoNetworkFunctions.showControllerInfo("applications", entryId.get(), SWITCHES, ONOS_URL, ONOS_USR, ONOS_PWD))
         buttonLinks.grid(row=2,column=3, sticky="w")
-        
+
         buttonHelp= ttk.Button(self, text="Help", width=10, command=lambda: gansoMiscFunctions.help("Controller"))
         buttonHelp.grid(row=6,column=1, sticky="sw")
 
@@ -426,7 +426,7 @@ class PageController(tk.Frame):
         buttonBack.grid(row=6,column=6,sticky="sw")
         buttonExit = ttk.Button(self, text="Exit", command=exit)
         buttonExit.grid(row=6,column=7,sticky="sw")
-        
+
         self.grid_rowconfigure(0, minsize=50)
         self.grid_rowconfigure(1, minsize=30)
         self.grid_rowconfigure(2, minsize=30)
@@ -439,7 +439,7 @@ class PageController(tk.Frame):
 # Network Slice Page - Allows user to create or upload network slices
 class PageNetSlice(tk.Frame):
 
-    def __init__(self, parent, controller):         
+    def __init__(self, parent, controller):
 
         tk.Frame.__init__(self, parent)
 
@@ -478,10 +478,10 @@ class PageNetSlice(tk.Frame):
         tk.Label(self, text=" ",width=8).grid(row=1,column=0)
         tk.Label(self, text=" ",width=7).grid(row=2,column=2)
         tk.Label(self, text=" ",width=7).grid(row=2,column=4)
-        tk.Label(self, text=" ",width=7).grid(row=2,column=6)     
+        tk.Label(self, text=" ",width=7).grid(row=2,column=6)
         self.grid_rowconfigure(0, minsize=45)
         self.grid_rowconfigure(4, minsize=30)
-        
+
         def uploadGST(switches, onosUrl, onosUsr, onosPwd):
             self.filename = filedialog.askopenfilename(initialdir=".", title="Select the GST", \
                 filetypes=(("xml files", "*.xml"),("json files", "*.json")))

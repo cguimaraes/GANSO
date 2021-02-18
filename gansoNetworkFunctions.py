@@ -37,7 +37,7 @@ def getSwitches(onosUrl, onosUsr, onosPwd):
 
 # ================================================================================================================================== #
 
-# Show information of an element    
+# Show information of an element
 def showNetInfo(showOption, switches, onosUrl, onosUsr, onosPwd):
 
     infoBox = tk.Toplevel()
@@ -63,7 +63,7 @@ def showNetInfo(showOption, switches, onosUrl, onosUsr, onosPwd):
 
 # ================================================================================================================================== #
 
-# Show information of an element    
+# Show information of an element
 def showControllerInfo(showOption, optionId, switches, onosUrl, onosUsr, onosPwd):
 
     infoBox = tk.Toplevel()
@@ -86,7 +86,7 @@ def showControllerInfo(showOption, optionId, switches, onosUrl, onosUsr, onosPwd
 
     if showOption == "flows" and optionId != "":
         for x in range(len(switches)):
-            
+
             onosUrlAux = onosUrl + "/"+ switches[x] + "/"+optionId
             request = requests.get(onosUrlAux, auth=(onosUsr, onosPwd))
 
@@ -99,7 +99,7 @@ def showControllerInfo(showOption, optionId, switches, onosUrl, onosUsr, onosPwd
 
         if optionId != "":
             onosUrl += "/" + optionId
-            
+
         request = requests.get(onosUrl, auth=(onosUsr, onosPwd))
         aux = json.loads(request.text)
         info.insert(tk.END, json.dumps(aux, indent=2))
@@ -115,7 +115,7 @@ def newGst(username, switches, onosUrl, onosUsr, onosPwd):
 
     pageTitle = tk.Label(gstForm, text="      New network slice", font = LARGE_FONT, height=2)
     pageTitle.grid(row=0, column=1, columnspan = 6)
-    
+
     # Slice Name
     tk.Label(gstForm, text="        Network slice name: ").grid(row=1, column=2,sticky="w")
     entrySliceName = ttk.Entry(gstForm, width=20)
@@ -133,7 +133,7 @@ def newGst(username, switches, onosUrl, onosUsr, onosPwd):
         "IoT",
         "Public safety",
     ]
-    
+
     tk.Label(gstForm, text="        Slice industry: ").grid(row=2, column=2,sticky="w")
     clickIndustry = tk.StringVar()
     clickIndustry.set(industryList[0])
@@ -158,7 +158,7 @@ def newGst(username, switches, onosUrl, onosUsr, onosPwd):
         "1 - Private network",
         "2 - No traffic",
     ]
-    
+
     tk.Label(gstForm, text="        User data access: ").grid(row=7, column=2,sticky="w")
     userDataslice = tk.StringVar()
     userDataslice.set(userDataList[0])
@@ -174,27 +174,27 @@ def newGst(username, switches, onosUrl, onosUsr, onosPwd):
     exportGST = tk.IntVar()
     exportCheck = tk.Checkbutton(gstForm, text = "Export GST", variable=exportGST)
     exportCheck.grid(row = 10, column=3, columnspan=4,sticky="w")
-    
+
     # Create Network slice
     createNetSlice = tk.IntVar()
     netSliceCheck = tk.Checkbutton(gstForm, text = "Create Network Slice", variable=createNetSlice)
     netSliceCheck.grid(row = 11, column=3, columnspan=4,sticky="w")
-   
+
     # Action buttons
     buttonExit = ttk.Button(gstForm, text="Cancel", command=gstForm.destroy)
     buttonExit.grid(row=14,column=3,sticky="e")
     buttonCreate = ttk.Button(gstForm, text="Create", command=lambda: confirmGst(username, entrySliceName.get(), clickIndustry.get(), rateLimitSlice.get(), \
         rateLimitHosts.get(), userDataslice.get(), userDataHosts.get(), exportGST.get(), createNetSlice.get(), switches, onosUrl, onosUsr, onosPwd))
     buttonCreate.grid(row=14,column=4,sticky="e")
-   
+
     def confirmGst(username, sliceName, industry, rateLimit, rateLimitHosts, userDataAccess, userDataHosts, exportGST, createNetSlice, switches, onosUrl, onosUsr, onosPwd):
-        
+
         warningLabel = tk.Label(gstForm, text="")
 
         errorLabel = createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userDataAccess, userDataHosts, exportGST, createNetSlice, switches, onosUrl, onosUsr, onosPwd)
         warningLabel = tk.Label(gstForm, text=errorLabel)
         warningLabel.grid(row=13,column=1,columnspan=7,sticky='w')
-        
+
         if errorLabel == "Success!                                             ":
             gstForm.destroy()
 
@@ -218,15 +218,15 @@ def newGst(username, switches, onosUrl, onosUsr, onosPwd):
 # ================================================================================================================================== #
 
 def createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userDataAccess, userDataHosts, exportGST, createNetSlice, switches, onosUrl, onosUsr, onosPwd):
-    
-    outputPath = "NetSlices/" + sliceName + ".xml"  
+
+    outputPath = "NetSlices/" + sliceName + ".xml"
     rateLimitHosts = rateLimitHosts.replace(" ", "").split(',')
     userDataHosts = userDataHosts.replace(" ", "").split(',')
 
     root=Element('GST')
     tree=ET.ElementTree(root)
 
-    if sliceName == "": 
+    if sliceName == "":
         return "        Error: Please fill all obligatory fields             "
     elif industry == "Select":
         return "        Error: Please choose an industry                     "
@@ -276,7 +276,7 @@ def createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userData
         tree.write(f, xml_declaration=False, encoding='utf-8')
 
     if exportGST == 1:
-        
+
         outputPath = gansoMiscFunctions.outputFolder()
 
         if outputPath != '':
@@ -284,7 +284,7 @@ def createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userData
             with open(outputPath, 'wb') as f:
                 f.write(b'<?xml version="1.0" encoding="UTF-8"?>')
                 tree.write(f, xml_declaration=False, encoding='utf-8')
-            
+
     if createNetSlice == 1:
 
         createNetworkSlice(sliceName, switches, onosUrl, onosUsr, onosPwd, False)
@@ -316,7 +316,7 @@ def showSlices():
     scrollbarHor.config(command=info.xview)
 
     # Open file containing users
-    netSlicesFile = open('NetSlices/netSlices.txt', 'r') 
+    netSlicesFile = open('NetSlices/netSlices.txt', 'r')
     count = 0
 
     # Read users
@@ -324,14 +324,14 @@ def showSlices():
 
         count += 1
 
-        # Get next line from file 
+        # Get next line from file
         netSliceName = netSlicesFile.readline().replace('\n', '')
 
-        # End of file is reached 
+        # End of file is reached
         if not netSliceName:
             netSlicesFile.close()
             return False
-        
+
         file = open('NetSlices/'+ netSliceName + '.xml', 'r')
 
         dom = xml.dom.minidom.parse(file)
@@ -346,7 +346,7 @@ def showSlices():
 # ================================================================================================================================== #
 
 def createNetworkSlice(sliceName, switches, onosUrl, onosUsr, onosPwd, uploaded):
-    
+
     if uploaded:
         gstPath = sliceName
         sliceName = sliceName.split("/")
@@ -354,9 +354,9 @@ def createNetworkSlice(sliceName, switches, onosUrl, onosUsr, onosPwd, uploaded)
         netSlicesFile = open("NetSlices/netSlices.txt", "a+")
         netSlicesFile.write(sliceName.replace('.xml',"")+"\n")
         netSlicesFile.close()
-        copyfile(gstPath, 'NetSlices/'+sliceName)      
+        copyfile(gstPath, 'NetSlices/'+sliceName)
     else:
-        gstPath = "NetSlices/" + sliceName + ".xml"    
+        gstPath = "NetSlices/" + sliceName + ".xml"
     rateLimitHosts = []
     userDataHosts = []
     root = ET.parse(gstPath).getroot()
@@ -387,9 +387,9 @@ def createNetworkSlice(sliceName, switches, onosUrl, onosUsr, onosPwd, uploaded)
 def rateLimitRule(rateLimit, priority, switchId, hosts, onosUrl, onosUsr, onosPwd):
 
     # FALTA: ASIGNAR A LOS VLAN ID
-    for j in range(len(hosts)):    
+    for j in range(len(hosts)):
         meterId = 0
-        
+
         urlMeter = onosUrl+"meters/" + switchId
         with open('Resources/FlowRules/rateLimitMeters.json') as json_file:
             meterJson = json.load(json_file)
@@ -402,7 +402,7 @@ def rateLimitRule(rateLimit, priority, switchId, hosts, onosUrl, onosUsr, onosPw
 
         for i in range(len(meterReq["meters"])):
 
-            aux = meterReq["meters"][i]["id"]        
+            aux = meterReq["meters"][i]["id"]
             aux = int(aux, 16)
 
             if aux > meterId:
@@ -421,18 +421,18 @@ def rateLimitRule(rateLimit, priority, switchId, hosts, onosUrl, onosUsr, onosPw
         flowJson["selector"]["criteria"][1]["ip"] = hosts[j]+"/32"
 
         for x in range(2):
-            flowJson["tableId"] = x            
+            flowJson["tableId"] = x
             requests.post(urlFlow, auth=(onosUsr, onosPwd), json = flowJson)
-        
+
 # ================================================================================================================================== #
 
 # Function to user data access rule
 def userDataAccessRule(userDataAccess, priority, switchId, hosts, onosUrl, onosUsr, onosPwd):
-    
+
     urlFlow = onosUrl+"flows/"+switchId+"?appId=*.core"
 
     if userDataAccess == "1 - Private network":
-        
+
         with open('Resources/FlowRules/userDataFlows_PrivateNetwork.json') as json_file1:
             flowJson1 = json.load(json_file1)
 
@@ -458,7 +458,7 @@ def userDataAccessRule(userDataAccess, priority, switchId, hosts, onosUrl, onosU
             requests.post(urlFlow, auth=(onosUsr, onosPwd), json = flowJson2)
 
     elif userDataAccess == "2 - No traffic":
-        
+
         with open('Resources/FlowRules/userDataFlows_NoConnection.json') as json_file:
             flowJson = json.load(json_file)
 
@@ -466,7 +466,7 @@ def userDataAccessRule(userDataAccess, priority, switchId, hosts, onosUrl, onosU
 
         # FALTA: ASIGNAR A LOS VLAN ID
         for j in range(len(hosts)):
-            
+
             flowJson["selector"]["criteria"][1]["ip"] = hosts[j]+"/32"
             requests.post(urlFlow, auth=(onosUsr, onosPwd), json = flowJson)
 
@@ -476,7 +476,7 @@ def userDataAccessRule(userDataAccess, priority, switchId, hosts, onosUrl, onosU
 def netSliceExists(userName, netSliceName):
 
     # Open file containing users
-    netSlicesFile = open('NetSlices/netSlices.txt', 'r') 
+    netSlicesFile = open('NetSlices/netSlices.txt', 'r')
     count = 0
 
     # Read users
@@ -484,10 +484,10 @@ def netSliceExists(userName, netSliceName):
 
         count += 1
 
-        # Get next line from file 
-        currentLine = netSlicesFile.readline() 
+        # Get next line from file
+        currentLine = netSlicesFile.readline()
 
-        # End of file is reached 
+        # End of file is reached
         if not currentLine:
             netSlicesFile.close()
             return False

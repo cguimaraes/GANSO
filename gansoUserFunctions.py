@@ -20,26 +20,26 @@ BUTTON_FONT  = ("Arial", 10, 'bold')
 
 # Validate user credentials
 def userValidator(userName, userPwd):
-    
+
     # Open file containing users
-    userFile = open('Users/users.txt', 'r') 
+    userFile = open('Users/users.txt', 'r')
     count = 0
-    
+
     # Read users and passwords
     while True:
 
         count += 1
-    
-        # Get next line from file 
-        currentLine = userFile.readline() 
-    
-        # End of file is reached 
+
+        # Get next line from file
+        currentLine = userFile.readline()
+
+        # End of file is reached
         if not currentLine:
             userFile.close()
             return False
 
         userInfo = currentLine.rstrip().split(",")
-        
+
         # Validate user and password
         if userInfo[0] == userName and userInfo[1] == userPwd:
             userFile.close()
@@ -51,7 +51,7 @@ def userValidator(userName, userPwd):
 def userExists(userName):
 
     # Open file containing users
-    userFile = open('Users/users.txt', 'r') 
+    userFile = open('Users/users.txt', 'r')
     count = 0
 
     # Read users
@@ -59,10 +59,10 @@ def userExists(userName):
 
         count += 1
 
-        # Get next line from file 
-        currentLine = userFile.readline() 
+        # Get next line from file
+        currentLine = userFile.readline()
 
-        # End of file is reached 
+        # End of file is reached
         if not currentLine:
             userFile.close()
             return False
@@ -109,7 +109,7 @@ def createUserInfo(gansoUser, gansoPwd, ip1, ip2, ip3, ip4, port, onosUser, onos
                 # Create User Information XML file
                 try:
                     os.mkdir(path)
-                    
+
                     pathUserInfo = path + "/userInfo.xml"
 
                     root=Element('GANSO_user_information')
@@ -150,7 +150,7 @@ def createUserInfo(gansoUser, gansoPwd, ip1, ip2, ip3, ip4, port, onosUser, onos
                 except OSError:
                     return 6
 
-            # Error code: Connection to ONOS failed   
+            # Error code: Connection to ONOS failed
             else:
                 return 5
 
@@ -165,21 +165,21 @@ def getUserInfo(username):
 
     root = ET.parse('Users/user_'+username+'/userInfo.xml').getroot()
 
-    userInfo = [ 
+    userInfo = [
         root.find('GANSO_username').text,
         root.find('GANSO_password').text,
         root.find('ONOS_URL').text,
         root.find('ONOS_username').text,
         root.find('ONOS_password').text
     ]
-    
+
     return userInfo
 
 # ================================================================================================================================== #
 
 # Show error code in New User Creation form
 def errorNewUser(newUser):
-    
+
     # Error code: Mandatory field not filled
     if newUser == 1:
         label = "  Error: Please fill all fields             "
@@ -191,7 +191,7 @@ def errorNewUser(newUser):
         label = "  Error: Invalid IP or port                 "
     # Error code: Invalid Swtich Id format
     elif newUser == 4:
-        label = "  Error: Invalid Switch Id                  "                               
+        label = "  Error: Invalid Switch Id                  "
     # Error code: Unable to connect with ONOS
     elif newUser == 5:
         label = "  Error: Connection with ONOS failed        "

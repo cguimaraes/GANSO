@@ -43,7 +43,7 @@ def help(whichHelp):
 # ================================================================================================================================== #
 
 def outputFolder(title='Select output folder'):
-            
+
     root = tk.Tk()
     root.attributes("-topmost", True)
     root.withdraw()
