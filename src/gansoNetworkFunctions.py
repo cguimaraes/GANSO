@@ -110,7 +110,7 @@ def showControllerInfo(showOption, optionId, switches, onosUrl, onosUsr, onosPwd
 def newGst(username, switches, onosUrl, onosUsr, onosPwd):
 
     gstForm = tk.Toplevel()
-    gstForm.geometry("400x450")
+    gstForm.geometry("550x600")
     tk.Tk.resizable(gstForm,width=False, height=False)
 
     pageTitle = tk.Label(gstForm, text="      New network slice", font = LARGE_FONT, height=2)
@@ -170,30 +170,49 @@ def newGst(username, switches, onosUrl, onosUsr, onosPwd):
     userDataHosts = ttk.Entry(gstForm, width=25)
     userDataHosts.grid(row=8, column=3,columnspan=15)
 
+    # Slice Reliability
+    reliabilityList = [
+        "0 - None",
+        "0 - None",
+        "1 - Load-Balancing",
+        "2 - Duplicate",
+    ]
+
+    tk.Label(gstForm, text="        Reliability: ").grid(row=10, column=2,sticky="w")
+    reliabilityslice = tk.StringVar()
+    reliabilityslice.set(reliabilityList[0])
+    dropList = ttk.OptionMenu(gstForm, reliabilityslice, *reliabilityList)
+    dropList.grid(row=10,column=3,sticky="w",columnspan=3)
+
+    # Input host IPs
+    tk.Label(gstForm, text="        Hosts (IPs split by commas): ").grid(row=8, column=2,sticky="w")
+    reliabilityHosts = ttk.Entry(gstForm, width=25)
+    reliabilityHosts.grid(row=11, column=3,columnspan=15)
+
     # Export GST
     exportGST = tk.IntVar()
     exportCheck = tk.Checkbutton(gstForm, text = "Export GST", variable=exportGST)
-    exportCheck.grid(row = 10, column=3, columnspan=4,sticky="w")
+    exportCheck.grid(row = 15, column=3, columnspan=4,sticky="w")
 
     # Create Network slice
     createNetSlice = tk.IntVar()
     netSliceCheck = tk.Checkbutton(gstForm, text = "Create Network Slice", variable=createNetSlice)
-    netSliceCheck.grid(row = 11, column=3, columnspan=4,sticky="w")
+    netSliceCheck.grid(row = 16, column=3, columnspan=4,sticky="w")
 
     # Action buttons
     buttonExit = ttk.Button(gstForm, text="Cancel", command=gstForm.destroy)
-    buttonExit.grid(row=14,column=3,sticky="e")
+    buttonExit.grid(row=18,column=3,sticky="e")
     buttonCreate = ttk.Button(gstForm, text="Create", command=lambda: confirmGst(username, entrySliceName.get(), clickIndustry.get(), rateLimitSlice.get(), \
-        rateLimitHosts.get(), userDataslice.get(), userDataHosts.get(), exportGST.get(), createNetSlice.get(), switches, onosUrl, onosUsr, onosPwd))
-    buttonCreate.grid(row=14,column=4,sticky="e")
+        rateLimitHosts.get(), userDataslice.get(), userDataHosts.get(), reliabilityslice.get(), reliabilityHosts.get(), exportGST.get(), createNetSlice.get(), switches, onosUrl, onosUsr, onosPwd))
+    buttonCreate.grid(row=18,column=4,sticky="e")
 
-    def confirmGst(username, sliceName, industry, rateLimit, rateLimitHosts, userDataAccess, userDataHosts, exportGST, createNetSlice, switches, onosUrl, onosUsr, onosPwd):
+    def confirmGst(username, sliceName, industry, rateLimit, rateLimitHosts, userDataAccess, userDataHosts, reliability, reliabilityHosts, exportGST, createNetSlice, switches, onosUrl, onosUsr, onosPwd):
 
         warningLabel = tk.Label(gstForm, text="")
 
-        errorLabel = createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userDataAccess, userDataHosts, exportGST, createNetSlice, switches, onosUrl, onosUsr, onosPwd)
+        errorLabel = createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userDataAccess, userDataHosts, reliability, reliabilityHosts, exportGST, createNetSlice, switches, onosUrl, onosUsr, onosPwd)
         warningLabel = tk.Label(gstForm, text=errorLabel)
-        warningLabel.grid(row=13,column=1,columnspan=7,sticky='w')
+        warningLabel.grid(row=17,column=1,columnspan=7,sticky='w')
 
         if errorLabel == "Success!                                             ":
             gstForm.destroy()
@@ -214,14 +233,19 @@ def newGst(username, switches, onosUrl, onosUsr, onosPwd):
     gstForm.grid_rowconfigure(12, minsize=20)
     gstForm.grid_rowconfigure(13, minsize=20)
     gstForm.grid_rowconfigure(14, minsize=20)
+    gstForm.grid_rowconfigure(15, minsize=20)
+    gstForm.grid_rowconfigure(16, minsize=20)
+    gstForm.grid_rowconfigure(17, minsize=20)
+    gstForm.grid_rowconfigure(18, minsize=20)
 
 # ================================================================================================================================== #
 
-def createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userDataAccess, userDataHosts, exportGST, createNetSlice, switches, onosUrl, onosUsr, onosPwd):
+def createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userDataAccess, userDataHosts, reliability, reliabilityHosts, exportGST, createNetSlice, switches, onosUrl, onosUsr, onosPwd):
 
     outputPath = "NetSlices/" + sliceName + ".xml"
     rateLimitHosts = rateLimitHosts.replace(" ", "").split(',')
     userDataHosts = userDataHosts.replace(" ", "").split(',')
+    reliabilityHosts = reliabilityHosts.replace(" ", "").split(',')
 
     root=Element('GST')
     tree=ET.ElementTree(root)
@@ -236,6 +260,8 @@ def createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userData
         return "        Error: Rate limit must be a positive integer         "
     elif userDataAccess == "Select":
         return "        Error: Please choose User data access option         "
+    elif reliability == "Select":
+        return "        Error: Please choose Reliability option              "
     elif netSliceExists(username, sliceName):
         return "        Error: Network slice name already exists             "
 
@@ -270,6 +296,17 @@ def createGst(username, sliceName, industry, rateLimit, rateLimitHosts, userData
     for i in range(len(userDataHosts)):
         hostIp = ET.SubElement(userDataHostsXml,'host_ip')
         hostIp.text = str(userDataHosts[i])
+
+    # Slice Reliability
+    reliabilityXml = Element('reliability')
+    root.append(reliabilityXml)
+    reliabilityValueXml = ET.SubElement(reliabilityXml, 'value')
+    reliabilityValueXml.text = str(reliability)
+    reliabilityHostsXml = ET.SubElement(reliabilityXml, 'hosts')
+
+    for i in range(len(reliabilityHosts)):
+        hostIp = ET.SubElement(reliabilityHostsXml,'host_ip')
+        hostIp.text = str(reliabilityHosts[i])
 
     with open(outputPath, 'wb') as f:
         f.write(b'<?xml version="1.0" encoding="UTF-8"?>')
